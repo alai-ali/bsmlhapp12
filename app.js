@@ -1,14 +1,13 @@
-function stopPatBeam(){document.getElementById(‘pat-beam’).classList.remove(‘active’);}
 var U={name:’’,huid:’’,photo:’’,qrt:0.01,qrnc:0,invs:[],lv:1,dark:false,hasChip:false};
 var qrStream=null, qrInterval=null;
 
 // РЕГИСТРАЦИЯ
-function toggleLang(){var m=document.getElementById(‘l-menu’);m.style.display=m.style.display===‘flex’?‘none’:‘flex’;}
+function toggleLang(e){if(e)e.stopPropagation();var m=document.getElementById(‘l-menu’);m.style.display=m.style.display===‘flex’?‘none’:‘flex’;}
 function setLang(l){document.getElementById(‘reg-t’).innerText=(l===‘RU’?‘РЕГИСТРАЦИЯ’:l===‘EN’?‘REGISTRATION’:‘ТІРКЕЛУ’);toggleLang();}
 
 function startCam(){
 var nameVal=document.getElementById(‘in-f’).value.trim();
-if(!nameVal){T(‘⚠️ Введите имя’);return;}
+if(!nameVal){alert(‘Введите имя’);return;}
 U.name=nameVal;
 document.getElementById(‘scr-reg’).classList.remove(‘active’);
 if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
@@ -171,7 +170,7 @@ var d=[{n:‘Alex Chen’,a:‘🤖’,m:‘Secure connection active’,t:‘14:
 document.getElementById(‘view-chat’).innerHTML=d.map(x=>`<div class="chat-item" onclick="T('💬 ${x.n}')"><div class="chat-av">${x.a}</div><div style="flex:1"><div style="display:flex;justify-content:space-between"><span style="font-weight:500;font-size:15px">${x.n}</span><span style="font-size:11px;color:#bbb">${x.t}</span></div><div style="font-size:13px;color:#bbb">${x.m}</div></div></div>`).join(’’);
 }
 
-// ПАТЕНТ — попытка фиксации
+// ПАТЕНТ - попытка фиксации
 async function tryFixInv(){
 var t=document.getElementById(‘inv-t’).value.trim();
 var n=document.getElementById(‘inv-niche’).value;
@@ -182,7 +181,7 @@ var overlay=document.getElementById(‘chip-scan-overlay’);
 overlay.classList.add(‘on’);
 document.getElementById(‘patent-chip-status’).innerText=‘❌ Фиксация невозможна’;
 document.getElementById(‘patent-chip-sub’).innerText=‘Пожалуйста, пройдите идентификацию через BSMLH CHIP’;
-stopPatBeam();
+document.getElementById(‘pat-beam’).classList.remove(‘active’);
 setTimeout(()=>overlay.classList.remove(‘on’),3000);
 return;
 }
@@ -206,14 +205,14 @@ sec–;
 ps.innerText=’Сканирование… ’+sec+‘с’;
 if(sec<=0){
 clearInterval(iv);
-stopPatBeam();
+document.getElementById(‘pat-beam’).classList.remove(‘active’);
 overlay.classList.remove(‘on’);
 T(‘⚠️ Чип не найден. Попробуйте снова’);
 }
 },1000);
 ndef.onreading=function(){
 clearInterval(iv);
-stopPatBeam();
+document.getElementById(‘pat-beam’).classList.remove(‘active’);
 ps.innerText=‘✅ Чип считан!’;
 setTimeout(function(){
 overlay.classList.remove(‘on’);
@@ -221,7 +220,7 @@ fixInv();
 },800);
 };
 }catch(e){
-stopPatBeam();
+document.getElementById(‘pat-beam’).classList.remove(‘active’);
 overlay.classList.remove(‘on’);
 T(‘⚠️ Разрешите доступ к NFC’);
 }
@@ -255,9 +254,9 @@ function showCert(inv){
 document.getElementById(‘cert-author’).innerText=U.name;
 document.getElementById(‘cert-huid’).innerText=U.huid;
 document.getElementById(‘cert-title-txt’).innerText=inv.t;
-document.getElementById(‘cert-desc’).innerText=inv.desc||’—’;
+document.getElementById(‘cert-desc’).innerText=inv.desc||’-’;
 document.getElementById(‘cert-niche’).innerText=inv.niche;
-document.getElementById(‘cert-level’).innerText=‘Level ‘+inv.lv+’ — ‘+[‘Timestamp $0.99’,‘Prior Art $9.99’,‘Certificate $49.99’][inv.lv-1];
+document.getElementById(‘cert-level’).innerText=‘Level ‘+inv.lv+’ - ‘+[‘Timestamp $0.99’,‘Prior Art $9.99’,‘Certificate $49.99’][inv.lv-1];
 document.getElementById(‘cert-inv-id’).innerText=inv.id;
 document.getElementById(‘cert-time’).innerText=inv.date;
 var qd=encodeURIComponent(‘BSMLH-CERT:’+inv.id+’:’+U.huid);
