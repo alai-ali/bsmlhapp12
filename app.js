@@ -7,16 +7,22 @@ function toggleLang(){var m=document.getElementById(‘l-menu’);m.style.displa
 function setLang(l){document.getElementById(‘reg-t’).innerText=(l===‘RU’?‘РЕГИСТРАЦИЯ’:l===‘EN’?‘REGISTRATION’:‘ТІРКЕЛУ’);toggleLang();}
 
 function startCam(){
-if(!document.getElementById(‘in-f’).value)return;
-U.name=document.getElementById(‘in-f’).value;
+var nameVal=document.getElementById(‘in-f’).value.trim();
+if(!nameVal){T(‘⚠️ Введите имя’);return;}
+U.name=nameVal;
 document.getElementById(‘scr-reg’).classList.remove(‘active’);
+if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia){
 document.getElementById(‘scr-scan’).classList.add(‘active’);
-navigator.mediaDevices.getUserMedia({video:{facingMode:“user”}})
-.then(function(s){document.getElementById(‘video-feed’).srcObject=s;})
-.catch(function(){
+var camTimer=setTimeout(function(){
 document.getElementById(‘scr-scan’).classList.remove(‘active’);
 document.getElementById(‘scr-chip’).classList.add(‘active’);
-});
+},3000);
+navigator.mediaDevices.getUserMedia({video:{facingMode:“user”}})
+.then(function(s){clearTimeout(camTimer);document.getElementById(‘video-feed’).srcObject=s;})
+.catch(function(){clearTimeout(camTimer);document.getElementById(‘scr-scan’).classList.remove(‘active’);document.getElementById(‘scr-chip’).classList.add(‘active’);});
+} else {
+document.getElementById(‘scr-chip’).classList.add(‘active’);
+}
 }
 
 function takePhoto(){
