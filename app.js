@@ -1,4 +1,4 @@
-function stopPatBeam(){stopPatBeam();}
+function stopPatBeam(){document.getElementById(‘pat-beam’).classList.remove(‘active’);}
 var U={name:’’,huid:’’,photo:’’,qrt:0.01,qrnc:0,invs:[],lv:1,dark:false,hasChip:false};
 var qrStream=null, qrInterval=null;
 
